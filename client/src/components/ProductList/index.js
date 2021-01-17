@@ -1,14 +1,15 @@
 import React, {useEffect} from "react";
 import { useQuery } from '@apollo/react-hooks';
-import { useStoreContext } from '../../utils/GlobalState';
-import { UPDATE_PRODUCTS } from '../../utils/actions';
+import * as actions from '../../utils/actions';
 import ProductItem from "../ProductItem";
 import { QUERY_PRODUCTS } from "../../utils/queries";
 import spinner from "../../assets/spinner.gif"
 import { idbPromise } from "../../utils/helpers";
+import { useSelector, useDispatch } from "react-redux";
 
 function ProductList() {
-  const [state, dispatch] = useStoreContext();
+  const state = useSelector(state => state);
+  const dispatch = useDispatch();
 
   const { currentCategory } = state;
   
@@ -19,7 +20,7 @@ function ProductList() {
     if (data) {
       // let's store it in the global state object
       dispatch({
-        type: UPDATE_PRODUCTS,
+        type: actions.UPDATE_PRODUCTS,
         products: data.products
       });
   
@@ -33,7 +34,7 @@ function ProductList() {
       idbPromise('products', 'get').then((products) => {
         // use retrieved data to set global state for offline browsing
         dispatch({
-          type: UPDATE_PRODUCTS,
+          type: actions.UPDATE_PRODUCTS,
           products: products
         });
       });
